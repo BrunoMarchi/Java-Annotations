@@ -1,13 +1,14 @@
 package com.example.todolist.service;
 
+import com.example.todolist.annotation.BenchmarkTime;
+import com.example.todolist.annotation.LogParameters;
+import com.example.todolist.annotation.TransactionalService;
 import com.example.todolist.exceptions.InvalidDescriptionException;
 import com.example.todolist.model.Status;
 import com.example.todolist.model.ToDoItem;
 import com.example.todolist.repository.ToDoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,18 +16,18 @@ import java.util.Optional;
 import static com.example.todolist.Utils.isValidDescription;
 
 @Slf4j
-@Service
+@TransactionalService
 public class TodoService {
 
     @Autowired
     private ToDoRepository todoRepository;
 
-    @Transactional(readOnly = true)
+    @BenchmarkTime
     public List<ToDoItem> getAllToDoItems() {
         return todoRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
+    @BenchmarkTime
     public Optional<ToDoItem> getToDoItem(long id) {
         Optional<ToDoItem> item = todoRepository.findById(id);
         if(item.isPresent()) {
@@ -37,8 +38,9 @@ public class TodoService {
         return item;
     }
 
-    @Transactional
-    public long createToDoItem(ToDoItem item) throws InvalidDescriptionException {
+    @BenchmarkTime
+    @LogParameters
+    public Long createToDoItem(ToDoItem item) throws InvalidDescriptionException {
         String description = item.getDescription();
         if(isValidDescription(description) == false) {
             throw new InvalidDescriptionException();
@@ -49,7 +51,7 @@ public class TodoService {
         return createdItem.getId();
     }
 
-    @Transactional
+    @LogParameters
     public long updateOrCreateToDoItem(long id, ToDoItem item) throws InvalidDescriptionException {
         Optional<ToDoItem> searchItem = getToDoItem(id);
         if(searchItem.isPresent()) {
@@ -63,7 +65,7 @@ public class TodoService {
         return createToDoItem(item);
     }
 
-    @Transactional
+    @LogParameters
     public void deleteToDoItem(long id) {
         if(getToDoItem(id).isPresent()) {
             todoRepository.deleteById(id);

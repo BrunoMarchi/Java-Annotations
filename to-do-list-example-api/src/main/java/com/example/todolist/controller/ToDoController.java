@@ -1,5 +1,6 @@
 package com.example.todolist.controller;
 
+import com.example.todolist.annotation.RestControllerMapping;
 import com.example.todolist.exceptions.InvalidDescriptionException;
 import com.example.todolist.model.ToDoItem;
 import com.example.todolist.service.TodoService;
@@ -16,8 +17,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-@RestController
-@RequestMapping(path = "/todo")
+/*@RestController
+@RequestMapping(path = "/todo")*/
+@RestControllerMapping("/todo")
 public class ToDoController {
 
     @Autowired

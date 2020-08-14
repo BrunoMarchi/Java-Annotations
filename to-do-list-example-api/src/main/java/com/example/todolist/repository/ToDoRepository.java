@@ -9,5 +9,4 @@ import java.util.List;
 @Repository
 public interface ToDoRepository extends CrudRepository<ToDoItem, Long> {
     List<ToDoItem> findAll();
-
 }
